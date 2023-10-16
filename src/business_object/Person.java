@@ -17,16 +17,14 @@ public abstract class Person {
     private String lastName;
     private String phoneNumber;
     private String address;
-    private String email;
     private int age;
     private LocalDate dateOfBirth;
 
-    public Person(String firstName, String lastName, String phoneNumber, String address, String email, int age, LocalDate dateOfBirth) {
+    public Person(String firstName, String lastName, String phoneNumber, String address, LocalDate dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.email = email;
         LocalDate currentDate = LocalDate.now();
         Period period = Period.between(dateOfBirth, currentDate);
         this.age = period.getYears();
@@ -63,14 +61,6 @@ public abstract class Person {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public int getAge() {

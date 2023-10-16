@@ -12,10 +12,10 @@ import java.time.LocalDate;
  * @author ASUS
  */
 public class CrewMember extends Person{
-    RoleMember role;
+    private RoleMember role;
 
-    public CrewMember(String firstName, String lastName, String phoneNumber, String address, String email, int age, LocalDate dateOfBirth, RoleMember role) {
-        super(firstName, lastName, phoneNumber, address, email, age, dateOfBirth);
+    public CrewMember(String firstName, String lastName, String phoneNumber, String address, int age, LocalDate dateOfBirth, RoleMember role) {
+        super(firstName, lastName, phoneNumber, address, dateOfBirth);
         this.role = role;
     }
 

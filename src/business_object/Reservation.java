@@ -10,21 +10,21 @@ package business_object;
  * @author ASUS
  */
 public class Reservation {
-    private int id;
+    private String id;
     private Passenger reservedPassenger;
     private Flight reservedFlight;
 
-    public Reservation(int id, Passenger reservedPassenger, Flight reservedFlight) {
+    public Reservation(String id, Passenger reservedPassenger, Flight reservedFlight) {
         this.id = id;
         this.reservedPassenger = reservedPassenger;
         this.reservedFlight = reservedFlight;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

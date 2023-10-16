@@ -5,10 +5,16 @@
  */
 package data_objects;
 
+import business_object.Passenger;
+import java.util.List;
+
 /**
  *
  * @author ASUS
  */
-public class IPassengerDao {
-    
+public interface IPassengerDao {
+    List<Passenger> getAllPassengers();
+    boolean addPassenger(Passenger passenger);
+    boolean deletePassenger(Passenger passenger);
+    boolean updatePassenger(Passenger passenger);
 }

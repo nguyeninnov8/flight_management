@@ -12,9 +12,11 @@ import java.time.LocalDate;
  * @author ASUS
  */
 public class Admin extends Person{
-    
-    public Admin(String firstName, String lastName, String phoneNumber, String address, String email, int age, LocalDate dateOfBirth) {
-        super(firstName, lastName, phoneNumber, address, email, age, dateOfBirth);
+
+    public Admin(String firstName, String lastName, String phoneNumber, String address, LocalDate dateOfBirth) {
+        super(firstName, lastName, phoneNumber, address, dateOfBirth);
     }
+    
+    
     
 }

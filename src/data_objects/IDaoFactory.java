@@ -5,10 +5,14 @@
  */
 package data_objects;
 
+import utils.IValidation;
+
 /**
  *
  * @author ASUS
  */
 public interface IDaoFactory {
-    
+    IFlightDao flightDao();
+    IValidation validator();
+    IReservationDao reservationDao();
 }

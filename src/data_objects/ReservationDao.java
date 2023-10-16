@@ -26,9 +26,9 @@ public class ReservationDao implements IReservationDao{
     }
 
     @Override
-    public Reservation getReservation(int id) {
+    public Reservation getReservation(String id) {
         for (Reservation reservation : reservationList) {
-            if(reservation.getId() == id) {
+            if(reservation.getId().equals(id)) {
                 return reservation;
             }
         }
@@ -54,5 +54,20 @@ public class ReservationDao implements IReservationDao{
         }
         return false;
     }
+
+    @Override
+    public int countAllReservation() {
+        return reservationList.size() + 1;
+    }
     
+    @Override
+     public String generateNextReservationId() {
+        int counter = countAllReservation();
+        return "R" + String.format("%04d", counter);
+    }
+
+    @Override
+    public boolean checkReservationExist(String id) {
+        return (getReservation(id) != null);
+    }
 }

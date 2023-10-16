@@ -12,9 +12,8 @@ import java.time.LocalDate;
  * @author ASUS
  */
 public class Passenger extends Person{
-    
-    public Passenger(String firstName, String lastName, String phoneNumber, String address, String email, int age, LocalDate dateOfBirth) {
-        super(firstName, lastName, phoneNumber, address, email, age, dateOfBirth);
+
+    public Passenger(String firstName, String lastName, String phoneNumber, String address, LocalDate dateOfBirth) {
+        super(firstName, lastName, phoneNumber, address, dateOfBirth);
     }
-    
 }

@@ -5,10 +5,28 @@
  */
 package data_objects;
 
+import utils.IValidation;
+import utils.Validation;
+
 /**
  *
  * @author ASUS
  */
-public class DaoFactory {
+public class DaoFactory implements IDaoFactory{
+    
+    @Override
+    public IFlightDao flightDao() {
+        return new FlightDao();
+    }
+
+    @Override
+    public IValidation validator() {
+        return new Validation();
+    }
+
+    @Override
+    public IReservationDao reservationDao() {
+        return new ReservationDao();
+    }
     
 }
