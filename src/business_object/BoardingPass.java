@@ -43,4 +43,9 @@ public class BoardingPass {
     public void setFlight(Flight flight) {
         this.flight = flight;
     }
+
+    @Override
+    public String toString() {
+        return "BoardingPass{" + "passenger=" + passenger + ", seat=" + seat + ", flight=" + flight + '}';
+    }
 }

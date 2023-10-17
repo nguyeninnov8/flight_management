@@ -33,7 +33,7 @@ public class Service implements IService {
     @Override
     public void addNewFlight() {
         while (true) {
-            String flightNumber = validator.inputString("Input Flight Number: ", Flight.regex);
+            String flightNumber = validator.inputStringWithRegex("Please input correct format (Fxyzt with xyzt is a number)", "Input Flight Number: ", Flight.regex);
 
             if (flightDao.getFlight(flightNumber) != null) {
                 System.err.println("This flight number has exist. Please input another flight number");
@@ -59,9 +59,11 @@ public class Service implements IService {
         String requiredArriCity = validator.inputString("Input Arrival City: ");
         LocalDate requireDate = validator.inputDate("Input date: ");
         List<Flight> showList = showRequiredFlights(requiredDepCity, requiredArriCity, requireDate);
-        if(showList == null) return;
+        if (showList == null) {
+            return;
+        }
         String reservedFlightNumber;
-        
+
         while (true) {
             reservedFlightNumber = validator.inputString("Please enter flight number you want to resevere: ");
             if (!flightDao.checkFightExist(reservedFlightNumber, showList)) {
@@ -71,17 +73,17 @@ public class Service implements IService {
             }
             break;
         }
-        
+
         String passengerFirstName = validator.inputString("Input your first name: ");
         String passengerLastName = validator.inputString("Input your last name: ");
         String passengerPhoneNumber = validator.inputString("Input your phone number: ");
         String passengerAddress = validator.inputString("Input your address: ");
         LocalDate passengerDob = validator.inputDate("Input Date of Birth: ");
-        
+
         Passenger toAddPassenger = new Passenger(passengerFirstName, passengerLastName, passengerPhoneNumber, passengerAddress, passengerDob);
-        
+
         Reservation toAddReservation = new Reservation(rervationDao.generateNextReservationId(), toAddPassenger, flightDao.getFlight(reservedFlightNumber));
-        
+
         rervationDao.addReservation(toAddReservation);
     }
 
@@ -99,8 +101,8 @@ public class Service implements IService {
     @Override
     public List<Flight> showRequiredFlights(String departureLocation, String arrivalLocation, LocalDate date) {
         List<Flight> resultList = flightDao.getFlightBaseOnDepartArriLocateDate(departureLocation, arrivalLocation, date);
-        
-        if(resultList == null) {
+
+        if (resultList == null) {
             System.out.println("There is no flight that meet your requirement!");
             return null;
         }
@@ -118,31 +120,32 @@ public class Service implements IService {
     public void checkIn() {
         String reservationId, choosedSeat;
         while (true) {
-            reservationId =  validator.inputReservation("Please input reseravation id: ", "R\\d{4}");
-            if(rervationDao.checkReservationExist(reservationId)) {
+            reservationId = validator.inputReservation("Please input reseravation id: ", "R\\d{4}");
+            if (rervationDao.checkReservationExist(reservationId)) {
                 System.err.println("This reservation id does not exist!\n"
                         + "Please check again!");
                 continue;
             }
             break;
         }
-        
+
         flightDao.showAllSeats(rervationDao.getReservation(reservationId).getReservedFlight());
         while (true) {
-           choosedSeat = validator.inputString("Please choose your seat (e.g., A1, A2, A3,...): "); 
-           if(!flightDao.isValidSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat)) {
-               System.err.println("Please input valid seat!");
-               continue;
-           }
-           break;
+            choosedSeat = validator.inputStringWithRegex("Please input correct format (e.g., A1, A2, A3)", "Please choose your seat (e.g., A1, A2, A3,...): ", "^[a-zA-Z][1-6]$");
+            if (!flightDao.isValidSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat)) {
+                System.err.println("Please input valid seat!");
+                continue;
+            }
+            break;
         }
-        
+
+        flightDao.setStatusSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat);
         BoardingPass boardingPass = new BoardingPass(rervationDao.getReservation(reservationId).getReservedPassenger(), choosedSeat, rervationDao.getReservation(reservationId).getReservedFlight());
+        viewBoardingPass(boardingPass);
     }
 
- 
     private void viewBoardingPass(BoardingPass boardingPass) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         System.out.println("-------------------------------------");
         System.out.println("|            Boarding Pass          |");
         System.out.println("-------------------------------------");
@@ -150,9 +153,15 @@ public class Service implements IService {
         System.out.format("|FROM: %s                            |\n", boardingPass.getFlight().getDepartureCity());
         System.out.format("|TO: %s                              |\n", boardingPass.getFlight().getDestinationCity());
         System.out.format("|TIME:                               |\n");
-        System.out.format("|      DEPARTURE TIME: %S            |\n", boardingPass.getFlight().getDepartureTime().format(dateTimeFormatter));
-        System.out.format("|      ARRIVAL TIME: %S              |\n", boardingPass.getFlight().getArrivalTime().format(dateTimeFormatter));
-
+        System.out.format("|      DEPARTURE TIME: %s           |\n", boardingPass.getFlight().getDepartureTime().format(dateTimeFormatter));
+        System.out.format("|      ARRIVAL TIME: %s              |\n", boardingPass.getFlight().getArrivalTime().format(dateTimeFormatter));
+        System.out.format("|FLIGHT: %s                           |\n", boardingPass.getFlight().getFlightNumber());
+        System.out.format("|SEAT: %s                            |\n", boardingPass.getSeat());
+        System.out.println("|------------------------------------|");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
- }
-
+}

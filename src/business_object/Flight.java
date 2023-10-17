@@ -20,27 +20,24 @@ public class Flight {
     private String flightNumber;
     private String departureCity;
     private String destinationCity;
-    private LocalTime departureTime;
-    private LocalTime arrivalTime;
-    private LocalDate flightDate;
-    private String[][] availableSeat;
+    private LocalDate departureTime;
+    private LocalDate arrivalTime;
+    private boolean[][] availableSeat;
 
-    public Flight(String flightNumber, String departureCity, String destinationCity, LocalTime departureTime, LocalTime arrivalTime, LocalDate flightDate) {
+    public Flight(String flightNumber, String departureCity, String destinationCity, LocalDate departureTime, LocalDate arrivalTime) {
         this.flightNumber = flightNumber;
         this.departureCity = departureCity;
         this.destinationCity = destinationCity;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
-        this.flightDate = flightDate;
-        this.availableSeat = new String[maxRow][maxColumn];
+        this.availableSeat = new boolean[maxRow][maxColumn];
         initializeSeat(availableSeat);
     }
     
-    private void initializeSeat(String[][] seats) {
+    private void initializeSeat(boolean[][] seats) {
         for(int i = 0; i < seats.length; i++) {
-            char rowChar = (char) ('A' + i);
             for(int j = 0; j < seats[i].length; j++) {
-                seats[i][j] = String.valueOf(rowChar) + (j + 1);
+                seats[i][j] = true;
             }
         }
     }
@@ -69,45 +66,35 @@ public class Flight {
         this.destinationCity = destinationCity;
     }
 
-    public LocalTime getDepartureTime() {
+    public LocalDate getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalTime departureTime) {
+    public void setDepartureTime(LocalDate departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalTime getArrivalTime() {
+    public LocalDate getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalTime arrivalTime) {
+    public void setArrivalTime(LocalDate arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
-    public LocalDate getFlightDate() {
-        return flightDate;
-    }
-
-    public void setFlightDate(LocalDate flightDate) {
-        this.flightDate = flightDate;
-    }
-
-    public String[][] getAvailableSeat() {
+    public boolean[][] getAvailableSeat() {
         return availableSeat;
     }
 
-    public void setAvailableSeat(String[][] availableSeat) {
+    public void setAvailableSeat(boolean[][] availableSeat) {
         this.availableSeat = availableSeat;
     }
 
     @Override
     public String toString() {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String departureTimeStr = this.departureTime.format(timeFormatter);
-        String arrivalTImeStr = this.arrivalTime.format(timeFormatter);
-        String fligtDateStr = this.flightDate.format(dateFormatter);
-        return String.format("%6s|%11s|%11s|%8s|%8s|%8s", this.flightNumber, this.departureCity, this.destinationCity, departureTimeStr, arrivalTImeStr, fligtDateStr);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String departureTimeStr = this.departureTime.format(dateTimeFormatter);
+        String arrivalTImeStr = this.arrivalTime.format(dateTimeFormatter);
+        return String.format("%6s|%11s|%11s|%8s|%8s", this.flightNumber, this.departureCity, this.destinationCity, departureTimeStr, arrivalTImeStr);
     }
 }

@@ -122,4 +122,12 @@ public class FlightDao implements IFlightDao{
        
        return true;
     }
+
+    @Override
+    public void setStatusSeat(Flight flight, String seat) {
+       boolean[][] seats = flight.getAvailableSeat();
+       int row = Character.toUpperCase(seat.charAt(0)) - 97;
+       int column = Integer.parseInt(seat.charAt(1)+"");
+       seats[row][column] = false;
+    }
 }
