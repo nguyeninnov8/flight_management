@@ -15,12 +15,14 @@ import java.time.format.DateTimeFormatter;
 public class CrewMember extends Person{
     private String id;
     private RoleMember role;
+    private boolean isAvailable;
     public static final String regex = "M\\d{4}";
 
     public CrewMember(String id, RoleMember role, String firstName, String lastName, String phoneNumber, String address, LocalDate dateOfBirth) {
         super(firstName, lastName, phoneNumber, address, dateOfBirth);
         this.id = id;
         this.role = role;
+        this.isAvailable = true;
     }
 
     public String getId() {
@@ -38,6 +40,16 @@ public class CrewMember extends Person{
     public void setRole(RoleMember role) {
         this.role = role;
     }
+
+    public boolean isIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+    
+    
 
     @Override
     public String toString() {

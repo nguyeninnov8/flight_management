@@ -109,7 +109,20 @@ public class Flight {
 
     public void setCrewMembers(List<CrewMember> crewMembers) {
         this.crewMembers = crewMembers;
-    }    
+    }
+    
+    public boolean isCrewMemberExist(String id){
+        for(CrewMember member: crewMembers){
+            if(member.getId().equals(id)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean removeCrew(CrewMember removedMember){
+        return crewMembers.remove(removedMember);
+    }
 
     @Override
     public String toString() {

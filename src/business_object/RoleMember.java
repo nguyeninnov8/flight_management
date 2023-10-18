@@ -11,6 +11,6 @@ package business_object;
  */
 public enum RoleMember {
     PILOT,
-    FLIGHT_ATTENDANCE,
+    FLIGHT_ATTENDANT,
     GROUND_STAFF
 }

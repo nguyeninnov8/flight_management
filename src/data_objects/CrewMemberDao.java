@@ -36,5 +36,26 @@ public class CrewMemberDao implements ICrewMemberDao{
     public boolean deleteCrewMember(CrewMember member) {
         return crewMemberList.remove(member);
     }
+
+    @Override
+    public List<CrewMember> getAvailableMembers() {
+        List<CrewMember> availableMembers = new ArrayList<>();
+        for(CrewMember member: crewMemberList){
+            if(member.isIsAvailable()){
+                availableMembers.add(member);
+            }
+        }
+        return availableMembers;
+    }
+
+    @Override
+    public CrewMember getAvailabeMember(String id) {
+        for(CrewMember member: getAvailableMembers()){
+            if(member.getId().equals(id)){
+                return member;
+            }
+        }
+        return null;
+    }
     
 }

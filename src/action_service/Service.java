@@ -174,7 +174,7 @@ public class Service implements IService {
             crewMemberId = validator.inputStringWithRegex("Please input correct format (Mxyzt with xyzt is a number)", "Input Crew Number: ", CrewMember.regex);
 
             if (crewMemberDao.getCrewMember(crewMemberId) != null) {
-                System.err.println("This crew member number has exist. Please input another crew member number");
+                System.err.println("This crew member has exist. Please input another crew member number");
                 continue;
             }
             break;
@@ -193,14 +193,19 @@ public class Service implements IService {
     }
 
     @Override
-    public void showAllCrewMembers() {
+    public void showCrewMembers(List<CrewMember> list) {
         System.out.println("/t------Crew Members-------/t");
         System.out.println(String.format("%12s|%12s|%12s|%12s|%12s|%25s|%12s",
                 "Id", "Role", "First name", "Last name", "Phone number", "Address", "Date of birth"));
-        for (CrewMember member : crewMemberDao.getAll()) {
+        for (CrewMember member : list) {
             System.out.println(member);
         }
         System.out.println("-------------------");
+    }
+    
+    @Override
+    public void showAllCrewMembers() {
+        showCrewMembers(crewMemberDao.getAll());
     }
 
     @Override
@@ -210,12 +215,12 @@ public class Service implements IService {
             crewMemberId = validator.inputStringWithRegex("Please input correct format (Mxyzt with xyzt is a number)", "Input Crew Number (uppercased): ", CrewMember.regex);
 
             if (crewMemberDao.getCrewMember(crewMemberId) == null) {
-                System.err.println("This crew member number hasn't exist. Please input another crew member number");
+                System.err.println("This crew member hasn't exist. Please input another crew member number");
                 continue;
             }
             if (validator.checkYesOrNo("Confirm delete (Y/N)?")) {
                 CrewMember deletedMember = crewMemberDao.getCrewMember(crewMemberId);
-                if (!flightDao.isCrewMemberExist(crewMemberId)) {
+                if (deletedMember.isIsAvailable()) {
                     crewMemberDao.deleteCrewMember(deletedMember);
                     System.out.println("Successfully delete: " + deletedMember);
                 } else {
@@ -225,4 +230,89 @@ public class Service implements IService {
             break;
         }
     }
+    
+    @Override
+    public Flight inputFlight() {
+        // Choose a flight
+        Flight assignedFlight;
+        while (true) {
+            String flightNumber = validator.inputStringWithRegex("Please input correct format (Fxyzt with xyzt is a number)", "Input Flight Number: ", Flight.regex);
+            assignedFlight = flightDao.getFlight(flightNumber);
+            if (assignedFlight == null) {
+                System.err.println("This flight hasn't exist. Please input another flight number");
+                continue;
+            }
+            break;
+        }
+        return assignedFlight;
+    }
+
+    @Override
+    public void assignCrewToFlight() {
+        // Choose a flight
+        Flight assignedFlight = inputFlight();
+        // show available crew members
+        showCrewMembers(crewMemberDao.getAvailableMembers());
+        // add one or many crew members
+        do {
+            CrewMember member;
+            while (true) {
+                String crewMemberId = validator.inputStringWithRegex("Please input correct format (Mxyzt with xyzt is a number)", "Input Crew Number: ", CrewMember.regex);
+                member = crewMemberDao.getAvailabeMember(crewMemberId);
+                if (member == null) {
+                    System.err.println("This crew member hasn't exist in available crew members. Please input another crew member number");
+                    continue;
+                }
+                break;
+            }
+            // set available to False
+            member.setIsAvailable(false);
+            assignedFlight.getCrewMembers().add(member);
+            System.out.println("Successfully assign!");
+
+        } while (validator.checkYesOrNo("Continue to add crew member (Y/N)?"));
+    }
+
+    @Override
+    public void showCrewOfFlight() {
+        Flight flight = inputFlight();
+        showCrewMembers(flight.getCrewMembers());
+    }
+    
+    @Override
+    public void removeCrewFromFlight() {
+        // Choose a flight
+        Flight removedFlight = inputFlight();
+        // Show crew members' flight
+        showCrewMembers(removedFlight.getCrewMembers());
+        // remove one or many crew members
+        do {
+            CrewMember member;
+            while (true) {
+                String crewMemberId = validator.inputStringWithRegex("Please input correct format (Mxyzt with xyzt is a number)", "Input Crew Number: ", CrewMember.regex);
+                member = crewMemberDao.getCrewMember(crewMemberId);
+                // check exist in crew member database
+                if (member == null) {
+                    System.err.println("This crew member hasn't exist in database. Please input another crew member number");
+                    continue;
+                }
+                // check exist in flight's crew
+                if(!removedFlight.isCrewMemberExist(crewMemberId)){
+                    System.err.println("This crew member hasn't exist in this flight. Please input another crew member number");
+                    continue;
+                }
+                break;
+            }
+            // remove from Flight
+            if (validator.checkYesOrNo("Confirm delete (Y/N)?")) {
+                member.setIsAvailable(true);
+                if(removedFlight.removeCrew(member)){
+                    System.out.println("Successfully remove!");
+                } else {
+                    System.err.println("An error has occured during the removal! Please try again!");
+                }
+            }
+        } while (validator.checkYesOrNo("Continue to remove crew member (Y/N)?"));
+    }
+
 }
