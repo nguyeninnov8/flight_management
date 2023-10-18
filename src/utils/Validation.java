@@ -5,10 +5,11 @@
  */
 package utils;
 
-import business_object.RoleMember;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +66,7 @@ public class Validation implements IValidation{
                     System.err.println("Must input a number from " + min + " to " + max);
                     continue;
                 }
+                return returnNumber;
             } catch (NumberFormatException ex) {
                 System.err.println("Must enter a number");
             }
@@ -72,14 +74,14 @@ public class Validation implements IValidation{
     }
 
     @Override
-    public LocalDate inputDepatureTime(String msg) {
+    public LocalDateTime inputDepatureTime(String msg) {
         do {
             String rawInput = inputString(msg);
             
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             
             try {
-                LocalDate departureTime = LocalDate.parse(rawInput, dateTimeFormatter);
+                LocalDateTime departureTime = LocalDateTime.parse(rawInput, dateTimeFormatter.withResolverStyle(ResolverStyle.SMART));
                 return departureTime;
             } catch (DateTimeParseException exception) {
                 System.err.println("Invalid time format. Please use dd/MM/yyyy HH:mm format");
@@ -88,9 +90,9 @@ public class Validation implements IValidation{
     }
 
     @Override
-    public LocalDate inputArrivalTime(String msg, LocalDate depatureTime) {
+    public LocalDateTime inputArrivalTime(String msg, LocalDateTime depatureTime) {
         do {
-            LocalDate arrivalTime = inputDepatureTime(msg);
+            LocalDateTime arrivalTime = inputDepatureTime(msg);
             
             if(depatureTime.isAfter(arrivalTime)) {
                 System.err.println("Arrival time cannot lower than Departure time!");
@@ -108,7 +110,7 @@ public class Validation implements IValidation{
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             
             try {
-                LocalDate date = LocalDate.parse(rawInput, dateTimeFormatter);
+                LocalDate date = LocalDate.parse(rawInput, dateTimeFormatter.withResolverStyle(ResolverStyle.SMART));
                 return date;
             } catch (DateTimeParseException exception) {
                 System.err.println("Invalid date format. Please use dd/MM/yyyy format");

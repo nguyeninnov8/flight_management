@@ -17,4 +17,7 @@ public interface IPassengerDao {
     boolean addPassenger(Passenger passenger);
     boolean deletePassenger(Passenger passenger);
     boolean updatePassenger(Passenger passenger);
+    // handling file
+    boolean saveToFile();
+    boolean loadFromFile();
 }

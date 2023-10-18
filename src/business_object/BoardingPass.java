@@ -5,11 +5,13 @@
  */
 package business_object;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ASUS
  */
-public class BoardingPass {
+public class BoardingPass implements Serializable{
     private Passenger passenger;
     private String seat;
     private Flight flight;

@@ -5,7 +5,8 @@
  */
 package business_object;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,19 +15,19 @@ import java.util.List;
  *
  * @author ASUS
  */
-public class Flight {
+public class Flight implements Serializable{
     private final int maxColumn = 6;
     private final int maxRow = 24;
     public static final String regex = "F\\d{4}";
     private String flightNumber;
     private String departureCity;
     private String destinationCity;
-    private LocalDate departureTime;
-    private LocalDate arrivalTime;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
     private boolean[][] availableSeat;
     private List<CrewMember> crewMembers;
 
-    public Flight(String flightNumber, String departureCity, String destinationCity, LocalDate departureTime, LocalDate arrivalTime) {
+    public Flight(String flightNumber, String departureCity, String destinationCity, LocalDateTime departureTime, LocalDateTime arrivalTime) {
         this.flightNumber = flightNumber;
         this.departureCity = departureCity;
         this.destinationCity = destinationCity;
@@ -37,7 +38,7 @@ public class Flight {
         initializeSeat(availableSeat);
     }
 
-    public Flight(String flightNumber, String departureCity, String destinationCity, LocalDate departureTime, LocalDate arrivalTime, boolean[][] availableSeat, List<CrewMember> crewMembers) {
+    public Flight(String flightNumber, String departureCity, String destinationCity, LocalDateTime departureTime, LocalDateTime arrivalTime, boolean[][] availableSeat, List<CrewMember> crewMembers) {
         this.flightNumber = flightNumber;
         this.departureCity = departureCity;
         this.destinationCity = destinationCity;
@@ -79,19 +80,19 @@ public class Flight {
         this.destinationCity = destinationCity;
     }
 
-    public LocalDate getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalDate departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalDate getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalDate arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -129,6 +130,6 @@ public class Flight {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String departureTimeStr = this.departureTime.format(dateTimeFormatter);
         String arrivalTImeStr = this.arrivalTime.format(dateTimeFormatter);
-        return String.format("%6s|%11s|%11s|%8s|%8s", this.flightNumber, this.departureCity, this.destinationCity, departureTimeStr, arrivalTImeStr);
+        return String.format("%20s|%20s|%20s|%20s|%20s", this.flightNumber, this.departureCity, this.destinationCity, departureTimeStr, arrivalTImeStr);
     }
 }

@@ -11,4 +11,7 @@ public interface ICrewMemberDao {
     CrewMember getAvailabeMember(String id);
     boolean addCrewMember(CrewMember member);
     boolean deleteCrewMember(CrewMember member);
+    // handling file
+    boolean saveToFile();
+    boolean loadFromFile();
 }

@@ -16,4 +16,6 @@ public interface IDaoFactory {
     IValidation validator();
     IReservationDao reservationDao();
     ICrewMemberDao crewMemberDao();
+    IPassengerDao passengerDao();
+    
 }

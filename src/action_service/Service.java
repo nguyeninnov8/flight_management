@@ -15,8 +15,10 @@ import data_objects.DaoFactory;
 import data_objects.ICrewMemberDao;
 import data_objects.IDaoFactory;
 import data_objects.IFlightDao;
+import data_objects.IPassengerDao;
 import data_objects.IReservationDao;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import utils.IValidation;
@@ -32,6 +34,7 @@ public class Service implements IService {
     static final IValidation validator = factoryDao.validator();
     static final IReservationDao rervationDao = factoryDao.reservationDao();
     static final ICrewMemberDao crewMemberDao = factoryDao.crewMemberDao();
+    static final IPassengerDao passengerDao = factoryDao.passengerDao();
 
     @Override
     public void addNewFlight() {
@@ -47,11 +50,12 @@ public class Service implements IService {
         }
         String depatureCity = validator.inputString("Input Departure City: ");
         String destinationCity = validator.inputString("Input Destination City: ");
-        LocalDate departureTime = validator.inputDepatureTime("Input departure time in HH:mm:ss format (e.g., 12:30): ");
-        LocalDate arrivalTime = validator.inputArrivalTime("Input arrival time in HH:mm:ss format (e.g., 12:30): ", departureTime);
+        LocalDateTime departureTime = validator.inputDepatureTime("Input departure time in dd/MM/yyyy HH:mm format (e.g., 10/10/2010 12:30): ");
+        LocalDateTime arrivalTime = validator.inputArrivalTime("Input arrival time in dd/MM/yyyy HH:mm format (e.g., 10/10/2010 12:30): ", departureTime);
         Flight toAddFlight = new Flight(flightNumber, depatureCity, destinationCity, departureTime, arrivalTime);
         if (flightDao.addNewFlight(toAddFlight)) {
             System.out.println("Flight added successfully!");
+            showAllFlight();
         } else {
             System.err.println("Some error has occured. Please check again!");
         }
@@ -80,22 +84,23 @@ public class Service implements IService {
 
         String passengerFirstName = validator.inputString("Input your first name: ");
         String passengerLastName = validator.inputString("Input your last name: ");
-        String passengerPhoneNumber = validator.inputString("Input your phone number: ");
+        String phoneNumber = validator.inputStringWithRegex("Please input correct format (10 digits)", "Input phone number: ", "^0\\d{9}$");
         String passengerAddress = validator.inputString("Input your address: ");
-        LocalDate passengerDob = validator.inputDate("Input Date of Birth: ");
+        LocalDate passengerDob = validator.inputDate("Input Date of Birth (format dd/MM/yyyy): ");
 
-        Passenger toAddPassenger = new Passenger(passengerFirstName, passengerLastName, passengerPhoneNumber, passengerAddress, passengerDob);
-
-        Reservation toAddReservation = new Reservation(rervationDao.generateNextReservationId(), toAddPassenger, flightDao.getFlight(reservedFlightNumber));
+        Passenger toAddPassenger = new Passenger(passengerFirstName, passengerLastName, phoneNumber, passengerAddress, passengerDob);
+        String reservationID = rervationDao.generateNextReservationId();
+        Reservation toAddReservation = new Reservation(reservationID, toAddPassenger, flightDao.getFlight(reservedFlightNumber));
+        System.out.println("Your reservation ID: " + reservationID);
 
         rervationDao.addReservation(toAddReservation);
     }
 
     @Override
     public void showAllFlight() {
-        System.out.println("/t------Flight-------/t");
-        System.out.println(String.format("%12s|%12s|%12s|%12s|%12s|12s",
-                "Flight Number", "Departure City", "Destination City", "Depature Time", "Arrival Time", "Date"));
+        System.out.println("------Flight-------");
+        System.out.println(String.format("%20s|%20s|%20s|%20s|%20s",
+                "Flight Number", "Departure City", "Destination City", "Depature Time", "Arrival Time"));
         for (Flight flight : flightDao.getAll()) {
             System.out.println(flight);
         }
@@ -106,18 +111,18 @@ public class Service implements IService {
     public List<Flight> showRequiredFlights(String departureLocation, String arrivalLocation, LocalDate date) {
         List<Flight> resultList = flightDao.getFlightBaseOnDepartArriLocateDate(departureLocation, arrivalLocation, date);
 
-        if (resultList == null) {
+        if (resultList.isEmpty()) {
             System.out.println("There is no flight that meet your requirement!");
             return null;
         }
-        System.out.println("/t------Flight-------/t");
-        System.out.println(String.format("%12s|%12s|%12s|%12s|%12s|12s",
-                "Flight Number", "Departure City", "Destination City", "Depature Time", "Arrival Time", "Date"));
+        System.out.println("------Flight-------");
+        System.out.println(String.format("%20s|%20s|%20s|%20s|%20s",
+                "Flight Number", "Departure City", "Destination City", "Depature Time", "Arrival Time"));
         for (Flight flight : resultList) {
             System.out.println(flight);
         }
         System.out.println("-------------------");
-        return resultList;
+            return resultList;
     }
 
     @Override
@@ -125,7 +130,7 @@ public class Service implements IService {
         String reservationId, choosedSeat;
         while (true) {
             reservationId = validator.inputReservation("Please input reseravation id: ", "R\\d{4}");
-            if (rervationDao.checkReservationExist(reservationId)) {
+            if (!rervationDao.checkReservationExist(reservationId)) {
                 System.err.println("This reservation id does not exist!\n"
                         + "Please check again!");
                 continue;
@@ -136,6 +141,7 @@ public class Service implements IService {
         flightDao.showAllSeats(rervationDao.getReservation(reservationId).getReservedFlight());
         while (true) {
             choosedSeat = validator.inputStringWithRegex("Please input correct format (e.g., A1, A2, A3)", "Please choose your seat (e.g., A1, A2, A3,...): ", "^[a-zA-Z][1-6]$");
+            System.out.println(choosedSeat);
             if (!flightDao.setValidSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat)) {
                 System.err.println("Please input valid seat!");
                 continue;
@@ -181,7 +187,7 @@ public class Service implements IService {
         }
         String firstName = validator.inputString("Input first name: ");
         String lastName = validator.inputString("Input last name: ");
-        String phoneNumber = validator.inputStringWithRegex("Please input correct format (10 digits)", "Input phone number: ", "^\\d{10}$");
+        String phoneNumber = validator.inputStringWithRegex("Please input correct format (10 digits)", "Input phone number: ", "^0\\d{9}$");
         String address = validator.inputString("Input address: ");
         LocalDate dateOfBirth = validator.inputDate("Input date of birth (format dd/MM/yyyy): ");
         CrewMember crewMember = new CrewMember(crewMemberId.toUpperCase(), role, firstName, lastName, phoneNumber, address, dateOfBirth);
@@ -313,6 +319,38 @@ public class Service implements IService {
                 }
             }
         } while (validator.checkYesOrNo("Continue to remove crew member (Y/N)?"));
+    }
+
+    @Override
+    public void saveAll() {
+        if(flightDao.saveToFile()){
+            System.out.println("Saving flights to database successfully!");
+        } else{
+            System.err.println("An error has occured during saving flights! Please try again!");
+        }
+        if(passengerDao.saveToFile()){
+            System.out.println("Saving passengers to database successfully!");
+        } else{
+            System.err.println("An error has occured during saving passengers! Please try again!");
+        }
+        if(rervationDao.saveToFile()){
+            System.out.println("Saving reservations to database successfully!");
+        } else{
+            System.err.println("An error has occured during saving reservations! Please try again!");
+        }
+        if(crewMemberDao.saveToFile()){
+            System.out.println("Saving crew members to database successfully!");
+        } else{
+            System.err.println("An error has occured during saving crew members! Please try again!");
+        }
+    }
+
+    @Override
+    public void loadAll() {
+        flightDao.loadFromFile();
+        passengerDao.loadFromFile();
+        rervationDao.loadFromFile();
+        crewMemberDao.loadFromFile();
     }
 
 }

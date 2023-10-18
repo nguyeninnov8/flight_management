@@ -3,9 +3,10 @@ package data_objects;
 import business_object.CrewMember;
 import java.util.ArrayList;
 import java.util.List;
+import utils.HandlingFile;
 
 public class CrewMemberDao implements ICrewMemberDao{
-    
+    private final String CREWMEMBER_FILEPATH = "src\\crewMember.dat";
     private List<CrewMember> crewMemberList;
 
     public CrewMemberDao() {
@@ -56,6 +57,16 @@ public class CrewMemberDao implements ICrewMemberDao{
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean saveToFile() {
+        return new HandlingFile<CrewMember>().saveToFile(CREWMEMBER_FILEPATH, crewMemberList);
+    }
+
+    @Override
+    public boolean loadFromFile() {
+        return new HandlingFile<CrewMember>().loadFromFile(CREWMEMBER_FILEPATH, crewMemberList);
     }
     
 }

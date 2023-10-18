@@ -5,6 +5,7 @@
  */
 package business_object;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -12,7 +13,7 @@ import java.time.Period;
  *
  * @author ASUS
  */
-public abstract class Person {
+public abstract class Person implements Serializable{
     private String firstName;
     private String lastName;
     private String phoneNumber;

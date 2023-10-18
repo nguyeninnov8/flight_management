@@ -31,4 +31,7 @@ public interface IService {
      void assignCrewToFlight();
      void showCrewOfFlight();
      void removeCrewFromFlight();
+     // Handling file repository
+     void saveAll();
+     void loadAll();
 }

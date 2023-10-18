@@ -33,5 +33,10 @@ public class DaoFactory implements IDaoFactory{
     public ICrewMemberDao crewMemberDao() {
         return new CrewMemberDao();
     }
+
+    @Override
+    public IPassengerDao passengerDao() {
+        return new PassengerDao();
+    }
     
 }

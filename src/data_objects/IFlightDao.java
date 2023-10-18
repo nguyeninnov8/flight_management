@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author ASUS
  */
-public interface IFlightDao{
+public interface IFlightDao {
     List<Flight> getAll();
     boolean checkEmptyList(List<Flight> list);
     boolean addNewFlight(Flight flight);
@@ -26,4 +26,7 @@ public interface IFlightDao{
     void showAllSeats(Flight flight);
     boolean setValidSeat(Flight flight, String seat);
     boolean isCrewMemberExist(String memberId);
+    // handling file
+    boolean saveToFile();
+    boolean loadFromFile();
 }
