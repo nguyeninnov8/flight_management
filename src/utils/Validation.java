@@ -5,10 +5,9 @@
  */
 package utils;
 
+import business_object.RoleMember;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -68,7 +67,6 @@ public class Validation implements IValidation{
                 }
             } catch (NumberFormatException ex) {
                 System.err.println("Must enter a number");
-                continue;
             }
         } while (true);
     }
@@ -85,7 +83,6 @@ public class Validation implements IValidation{
                 return departureTime;
             } catch (DateTimeParseException exception) {
                 System.err.println("Invalid time format. Please use dd/MM/yyyy HH:mm format");
-                continue;
             }
         } while(true);
     }
@@ -115,14 +112,13 @@ public class Validation implements IValidation{
                 return date;
             } catch (DateTimeParseException exception) {
                 System.err.println("Invalid date format. Please use dd/MM/yyyy format");
-                continue;
             }
         } while (true);
     }
 
     @Override
     public String inputReservation(String msg, String regex) {
-         do {
+        while(true){
             String data = inputString(msg);
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(data);
@@ -132,20 +128,21 @@ public class Validation implements IValidation{
                 continue;
             }
             return data;
-        } while(true);
+        }
     }
-
-//    @Override
-//    public String inputSeat(String msg) {
-//       String rawInput = inputString(msg);
-//       String regex = "^[a-zA-Z][1-6]$";
-//       Pattern pattern = Pattern.compile(regex);
-//       Matcher matcher = pattern.matcher(rawInput);
-//       
-//       if(!matcher.matches()) {
-//           return false;
-//       }
-//    }
-// "Please input correct format (Fxyzt with xyzt is a number)"
+    
+    @Override
+    public boolean checkYesOrNo(String msg) {
+        while (true) {
+            String input = inputString(msg);
+            if (input.equalsIgnoreCase("Y")) {
+                return true;
+            } else if (input.equalsIgnoreCase("N")) {
+                return false;
+            } else {
+                System.err.println("Must input Y or N to select option");
+            }
+        }
+    }
 
 }

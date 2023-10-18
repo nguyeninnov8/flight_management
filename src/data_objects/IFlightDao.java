@@ -24,6 +24,6 @@ public interface IFlightDao{
     boolean checkFightExist(String flightId, List<Flight> list);
     List<Flight> getFlightBaseOnDepartArriLocateDate(String departureLocation, String arrivalLocation, LocalDate flightDate);
     void showAllSeats(Flight flight);
-    boolean isValidSeat(Flight flight, String seat);
-    void setStatusSeat(Flight flight, String seat);
+    boolean setValidSeat(Flight flight, String seat);
+    boolean isCrewMemberExist(String memberId);
 }

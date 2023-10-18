@@ -6,8 +6,9 @@
 package business_object;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -23,6 +24,7 @@ public class Flight {
     private LocalDate departureTime;
     private LocalDate arrivalTime;
     private boolean[][] availableSeat;
+    private List<CrewMember> crewMembers;
 
     public Flight(String flightNumber, String departureCity, String destinationCity, LocalDate departureTime, LocalDate arrivalTime) {
         this.flightNumber = flightNumber;
@@ -31,8 +33,19 @@ public class Flight {
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.availableSeat = new boolean[maxRow][maxColumn];
+        this.crewMembers = new ArrayList<>();
         initializeSeat(availableSeat);
     }
+
+    public Flight(String flightNumber, String departureCity, String destinationCity, LocalDate departureTime, LocalDate arrivalTime, boolean[][] availableSeat, List<CrewMember> crewMembers) {
+        this.flightNumber = flightNumber;
+        this.departureCity = departureCity;
+        this.destinationCity = destinationCity;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.availableSeat = availableSeat;
+        this.crewMembers = crewMembers;
+    }    
     
     private void initializeSeat(boolean[][] seats) {
         for(int i = 0; i < seats.length; i++) {
@@ -89,6 +102,14 @@ public class Flight {
     public void setAvailableSeat(boolean[][] availableSeat) {
         this.availableSeat = availableSeat;
     }
+
+    public List<CrewMember> getCrewMembers() {
+        return crewMembers;
+    }
+
+    public void setCrewMembers(List<CrewMember> crewMembers) {
+        this.crewMembers = crewMembers;
+    }    
 
     @Override
     public String toString() {

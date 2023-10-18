@@ -10,7 +10,7 @@ package business_object;
  * @author ASUS
  */
 public enum RoleMember {
-    PILOTS,
+    PILOT,
     FLIGHT_ATTENDANCE,
     GROUND_STAFF
 }

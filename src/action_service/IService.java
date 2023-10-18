@@ -5,8 +5,8 @@
  */
 package action_service;
 
-import business_object.BoardingPass;
 import business_object.Flight;
+import business_object.RoleMember;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,4 +20,8 @@ public interface IService {
      void showAllFlight();
      List<Flight> showRequiredFlights(String departureLocation, String arrivalLocation, LocalDate date);
      void checkIn();
+     // CrewMember repository
+     void addCrewMember(RoleMember role);
+     void showAllCrewMembers();
+     void deleteCrewMember();
 }

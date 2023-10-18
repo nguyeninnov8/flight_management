@@ -6,17 +6,29 @@
 package business_object;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
  * @author ASUS
  */
 public class CrewMember extends Person{
+    private String id;
     private RoleMember role;
+    public static final String regex = "M\\d{4}";
 
-    public CrewMember(String firstName, String lastName, String phoneNumber, String address, int age, LocalDate dateOfBirth, RoleMember role) {
+    public CrewMember(String id, RoleMember role, String firstName, String lastName, String phoneNumber, String address, LocalDate dateOfBirth) {
         super(firstName, lastName, phoneNumber, address, dateOfBirth);
+        this.id = id;
         this.role = role;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public RoleMember getRole() {
@@ -25,6 +37,13 @@ public class CrewMember extends Person{
 
     public void setRole(RoleMember role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return String.format("%12s|%12s|%12s|%12s|%12s|%25s|%12s",
+                this.id, this.role, this.getFirstName(), this.getLastName(), this.getPhoneNumber(), this.getAddress(), this.getDateOfBirth().format(dateTimeFormatter));
     }
     
     

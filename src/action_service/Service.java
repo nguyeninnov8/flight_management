@@ -6,15 +6,17 @@
 package action_service;
 
 import business_object.BoardingPass;
+import business_object.CrewMember;
 import business_object.Flight;
 import business_object.Passenger;
 import business_object.Reservation;
+import business_object.RoleMember;
 import data_objects.DaoFactory;
+import data_objects.ICrewMemberDao;
 import data_objects.IDaoFactory;
 import data_objects.IFlightDao;
 import data_objects.IReservationDao;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import utils.IValidation;
@@ -29,11 +31,13 @@ public class Service implements IService {
     static final IFlightDao flightDao = factoryDao.flightDao();
     static final IValidation validator = factoryDao.validator();
     static final IReservationDao rervationDao = factoryDao.reservationDao();
+    static final ICrewMemberDao crewMemberDao = factoryDao.crewMemberDao();
 
     @Override
     public void addNewFlight() {
+        String flightNumber;
         while (true) {
-            String flightNumber = validator.inputStringWithRegex("Please input correct format (Fxyzt with xyzt is a number)", "Input Flight Number: ", Flight.regex);
+            flightNumber = validator.inputStringWithRegex("Please input correct format (Fxyzt with xyzt is a number)", "Input Flight Number: ", Flight.regex);
 
             if (flightDao.getFlight(flightNumber) != null) {
                 System.err.println("This flight number has exist. Please input another flight number");
@@ -45,7 +49,7 @@ public class Service implements IService {
         String destinationCity = validator.inputString("Input Destination City: ");
         LocalDate departureTime = validator.inputDepatureTime("Input departure time in HH:mm:ss format (e.g., 12:30): ");
         LocalDate arrivalTime = validator.inputArrivalTime("Input arrival time in HH:mm:ss format (e.g., 12:30): ", departureTime);
-        Flight toAddFlight = new Flight(depatureCity, depatureCity, destinationCity, departureTime, arrivalTime);
+        Flight toAddFlight = new Flight(flightNumber, depatureCity, destinationCity, departureTime, arrivalTime);
         if (flightDao.addNewFlight(toAddFlight)) {
             System.out.println("Flight added successfully!");
         } else {
@@ -132,14 +136,12 @@ public class Service implements IService {
         flightDao.showAllSeats(rervationDao.getReservation(reservationId).getReservedFlight());
         while (true) {
             choosedSeat = validator.inputStringWithRegex("Please input correct format (e.g., A1, A2, A3)", "Please choose your seat (e.g., A1, A2, A3,...): ", "^[a-zA-Z][1-6]$");
-            if (!flightDao.isValidSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat)) {
+            if (!flightDao.setValidSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat)) {
                 System.err.println("Please input valid seat!");
                 continue;
             }
             break;
         }
-
-        flightDao.setStatusSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat);
         BoardingPass boardingPass = new BoardingPass(rervationDao.getReservation(reservationId).getReservedPassenger(), choosedSeat, rervationDao.getReservation(reservationId).getReservedFlight());
         viewBoardingPass(boardingPass);
     }
@@ -162,6 +164,65 @@ public class Service implements IService {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addCrewMember(RoleMember role) {
+        String crewMemberId;
+        while (true) {
+            crewMemberId = validator.inputStringWithRegex("Please input correct format (Mxyzt with xyzt is a number)", "Input Crew Number: ", CrewMember.regex);
+
+            if (crewMemberDao.getCrewMember(crewMemberId) != null) {
+                System.err.println("This crew member number has exist. Please input another crew member number");
+                continue;
+            }
+            break;
+        }
+        String firstName = validator.inputString("Input first name: ");
+        String lastName = validator.inputString("Input last name: ");
+        String phoneNumber = validator.inputStringWithRegex("Please input correct format (10 digits)", "Input phone number: ", "^\\d{10}$");
+        String address = validator.inputString("Input address: ");
+        LocalDate dateOfBirth = validator.inputDate("Input date of birth (format dd/MM/yyyy): ");
+        CrewMember crewMember = new CrewMember(crewMemberId.toUpperCase(), role, firstName, lastName, phoneNumber, address, dateOfBirth);
+        if (crewMemberDao.addCrewMember(crewMember)) {
+            System.out.println("Crew member added successfully!");
+        } else {
+            System.err.println("Some error has occured. Please check again!");
+        }
+    }
+
+    @Override
+    public void showAllCrewMembers() {
+        System.out.println("/t------Crew Members-------/t");
+        System.out.println(String.format("%12s|%12s|%12s|%12s|%12s|%25s|%12s",
+                "Id", "Role", "First name", "Last name", "Phone number", "Address", "Date of birth"));
+        for (CrewMember member : crewMemberDao.getAll()) {
+            System.out.println(member);
+        }
+        System.out.println("-------------------");
+    }
+
+    @Override
+    public void deleteCrewMember() {
+        String crewMemberId;
+        while (true) {
+            crewMemberId = validator.inputStringWithRegex("Please input correct format (Mxyzt with xyzt is a number)", "Input Crew Number (uppercased): ", CrewMember.regex);
+
+            if (crewMemberDao.getCrewMember(crewMemberId) == null) {
+                System.err.println("This crew member number hasn't exist. Please input another crew member number");
+                continue;
+            }
+            if (validator.checkYesOrNo("Confirm delete (Y/N)?")) {
+                CrewMember deletedMember = crewMemberDao.getCrewMember(crewMemberId);
+                if (!flightDao.isCrewMemberExist(crewMemberId)) {
+                    crewMemberDao.deleteCrewMember(deletedMember);
+                    System.out.println("Successfully delete: " + deletedMember);
+                } else {
+                    System.err.println("Fail to delete because member has been assigned to flight: " + deletedMember);
+                }
+            }
+            break;
         }
     }
 }

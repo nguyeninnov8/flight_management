@@ -15,4 +15,5 @@ public interface IDaoFactory {
     IFlightDao flightDao();
     IValidation validator();
     IReservationDao reservationDao();
+    ICrewMemberDao crewMemberDao();
 }

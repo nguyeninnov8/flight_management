@@ -5,8 +5,8 @@
  */
 package utils;
 
+import business_object.RoleMember;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  *
@@ -20,4 +20,5 @@ public interface IValidation {
     LocalDate inputArrivalTime(String msg, LocalDate depatureTime);
     LocalDate inputDate(String msg);
     String inputReservation(String msg, String regex);
+    boolean checkYesOrNo(String msg);
 }

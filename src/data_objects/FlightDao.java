@@ -5,13 +5,12 @@
  */
 package data_objects;
 
+import business_object.CrewMember;
 import business_object.Flight;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -112,22 +111,26 @@ public class FlightDao implements IFlightDao{
     }
 
     @Override
-    public boolean isValidSeat(Flight flight, String seat) {
+    public boolean setValidSeat(Flight flight, String seat) {
        int row = Character.toUpperCase(seat.charAt(0)) - 97;
        int column = Integer.parseInt(seat.charAt(1)+"");
        boolean[][] seats = flight.getAvailableSeat();
        if(!seats[row][column]){
            return false;
        }
-       
+       seats[row][column] = false;
        return true;
     }
 
     @Override
-    public void setStatusSeat(Flight flight, String seat) {
-       boolean[][] seats = flight.getAvailableSeat();
-       int row = Character.toUpperCase(seat.charAt(0)) - 97;
-       int column = Integer.parseInt(seat.charAt(1)+"");
-       seats[row][column] = false;
+    public boolean isCrewMemberExist(String memberId) {
+        for(Flight flight: flightList){
+            for(CrewMember member: flight.getCrewMembers()){
+                if(member.getId().equals(memberId)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
