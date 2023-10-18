@@ -122,14 +122,14 @@ public class Service implements IService {
             System.out.println(flight);
         }
         System.out.println("-------------------");
-            return resultList;
+        return resultList;
     }
 
     @Override
     public void checkIn() {
         String reservationId, choosedSeat;
         while (true) {
-            reservationId = validator.inputReservation("Please input reseravation id: ", "R\\d{4}");
+            reservationId = validator.inputStringWithRegex("Please input correct format (Rxyzt with xyzt is a number)", "Please input reseravation id: ", "R\\d{4}");
             if (!rervationDao.checkReservationExist(reservationId)) {
                 System.err.println("This reservation id does not exist!\n"
                         + "Please check again!");
@@ -137,12 +137,11 @@ public class Service implements IService {
             }
             break;
         }
-
-        flightDao.showAllSeats(rervationDao.getReservation(reservationId).getReservedFlight());
+        Flight reserverdFlight = rervationDao.getReservation(reservationId).getReservedFlight();
+        flightDao.showAllSeats(reserverdFlight);
         while (true) {
             choosedSeat = validator.inputStringWithRegex("Please input correct format (e.g., A1, A2, A3)", "Please choose your seat (e.g., A1, A2, A3,...): ", "^[a-zA-Z][1-6]$");
-            System.out.println(choosedSeat);
-            if (!flightDao.setValidSeat(rervationDao.getReservation(reservationId).getReservedFlight(), choosedSeat)) {
+            if (!flightDao.setValidSeat(reserverdFlight, choosedSeat)) {
                 System.err.println("Please input valid seat!");
                 continue;
             }
@@ -155,16 +154,16 @@ public class Service implements IService {
     private void viewBoardingPass(BoardingPass boardingPass) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         System.out.println("-------------------------------------");
-        System.out.println("|            Boarding Pass          |");
+        System.out.println("|            Boarding Pass           |");
         System.out.println("-------------------------------------");
-        System.out.format("|NAME: %s                            |\n", (boardingPass.getPassenger().getFirstName() + " " + boardingPass.getPassenger().getLastName()));
-        System.out.format("|FROM: %s                            |\n", boardingPass.getFlight().getDepartureCity());
-        System.out.format("|TO: %s                              |\n", boardingPass.getFlight().getDestinationCity());
-        System.out.format("|TIME:                               |\n");
-        System.out.format("|      DEPARTURE TIME: %s           |\n", boardingPass.getFlight().getDepartureTime().format(dateTimeFormatter));
-        System.out.format("|      ARRIVAL TIME: %s              |\n", boardingPass.getFlight().getArrivalTime().format(dateTimeFormatter));
-        System.out.format("|FLIGHT: %s                           |\n", boardingPass.getFlight().getFlightNumber());
-        System.out.format("|SEAT: %s                            |\n", boardingPass.getSeat());
+        System.out.format("|NAME: %-30s|\n", (boardingPass.getPassenger().getFirstName() + " " + boardingPass.getPassenger().getLastName()));
+        System.out.format("|FROM: %-30s|\n", boardingPass.getFlight().getDepartureCity());
+        System.out.format("|TO: %-32s|\n", boardingPass.getFlight().getDestinationCity());
+        System.out.format("|TIME                                |\n");
+        System.out.format("| DEPARTURE TIME: %-19s|\n", boardingPass.getFlight().getDepartureTime().format(dateTimeFormatter));
+        System.out.format("| ARRIVAL TIME: %-21s|\n", boardingPass.getFlight().getArrivalTime().format(dateTimeFormatter));
+        System.out.format("|FLIGHT: %-28s|\n", boardingPass.getFlight().getFlightNumber());
+        System.out.format("|SEAT: %-30s|\n", boardingPass.getSeat());
         System.out.println("|------------------------------------|");
         try {
             Thread.sleep(10000);
@@ -351,6 +350,11 @@ public class Service implements IService {
         passengerDao.loadFromFile();
         rervationDao.loadFromFile();
         crewMemberDao.loadFromFile();
+    }
+
+    @Override
+    public void showAllFromFile() {
+        showAllFlight();
     }
 
 }

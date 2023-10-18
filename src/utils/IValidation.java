@@ -19,6 +19,5 @@ public interface IValidation {
     LocalDateTime inputDepatureTime(String msg);
     LocalDateTime inputArrivalTime(String msg, LocalDateTime depatureTime);
     LocalDate inputDate(String msg);
-    String inputReservation(String msg, String regex);
     boolean checkYesOrNo(String msg);
 }

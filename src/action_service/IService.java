@@ -34,4 +34,5 @@ public interface IService {
      // Handling file repository
      void saveAll();
      void loadAll();
+     void showAllFromFile();
 }

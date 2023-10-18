@@ -124,6 +124,10 @@ public class Flight implements Serializable{
     public boolean removeCrew(CrewMember removedMember){
         return crewMembers.remove(removedMember);
     }
+    
+    public void setUnavailable(int row, int column){
+        this.availableSeat[row][column] = false;
+    }
 
     @Override
     public String toString() {

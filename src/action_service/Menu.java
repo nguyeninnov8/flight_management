@@ -40,7 +40,7 @@ public class Menu {
                     service.saveAll();
                     break;
                 case 7:
-
+                    service.showAllFromFile();
             }
         } while (choice != 8);
     }

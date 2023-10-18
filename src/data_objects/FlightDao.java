@@ -8,8 +8,6 @@ package data_objects;
 import business_object.CrewMember;
 import business_object.Flight;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import utils.HandlingFile;
@@ -103,11 +101,11 @@ public class FlightDao implements IFlightDao{
     public void showAllSeats(Flight flight) {
         boolean[][] seats = flight.getAvailableSeat();
         int i = 0;
-        System.out.format("%3d %d %d %d %d %d\n", 1, 2, 3, 4, 5, 6);
+        System.out.format("%4d %d %d %d %d %d\n", 1, 2, 3, 4, 5, 6);
         for (boolean[] row : seats) {
-            System.out.print(String.format("%2c", (char) ('A' + i)));
+            System.out.print(String.format("%2c ", (char) ('A' + i)));
             for (boolean seat : row) {
-                if(seat == true) {
+                if(seat) {
                     System.out.print("O" + " ");
                 } else {
                     System.out.print("X" + " ");
@@ -120,13 +118,15 @@ public class FlightDao implements IFlightDao{
 
     @Override
     public boolean setValidSeat(Flight flight, String seat) {
-       int row = Character.toUpperCase(seat.charAt(0)) - 97;
-       int column = Integer.parseInt(seat.charAt(1)+"");
+       int row = Character.toUpperCase(seat.charAt(0)) - 65;
+       int column = Integer.parseInt(seat.charAt(1)+"") - 1;
        boolean[][] seats = flight.getAvailableSeat();
        if(!seats[row][column]){
+           System.err.println(seat + " has been taken!");
            return false;
        }
-       seats[row][column] = false;
+       flight.setUnavailable(row, column);
+       getFlight(flight.getFlightNumber()).setUnavailable(row, column);
        return true;
     }
 

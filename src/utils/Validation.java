@@ -117,21 +117,6 @@ public class Validation implements IValidation{
             }
         } while (true);
     }
-
-    @Override
-    public String inputReservation(String msg, String regex) {
-        while(true){
-            String data = inputString(msg);
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(data);
-            
-            if(!matcher.find()) {
-                System.out.println("Please input correct format (Rxyzt with xyzt is a number)");
-                continue;
-            }
-            return data;
-        }
-    }
     
     @Override
     public boolean checkYesOrNo(String msg) {
