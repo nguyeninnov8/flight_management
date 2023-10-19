@@ -91,6 +91,7 @@ public class Service implements IService {
         LocalDate passengerDob = validator.inputDate("Input Date of Birth (format dd/MM/yyyy): ");
 
         Passenger toAddPassenger = new Passenger(passengerFirstName, passengerLastName, phoneNumber, passengerAddress, passengerDob);
+        passengerDao.addPassenger(toAddPassenger);
         String reservationID = rervationDao.generateNextReservationId();
         Reservation toAddReservation = new Reservation(reservationID, toAddPassenger, flightDao.getFlight(reservedFlightNumber));
         System.out.println("Your reservation ID: " + reservationID);
@@ -211,8 +212,8 @@ public class Service implements IService {
 
     @Override
     public void showCrewMembers(List<CrewMember> list) {
-        System.out.println("/t------Crew Members-------/t");
-        System.out.println(String.format("%12s|%12s|%12s|%12s|%12s|%25s|%12s",
+        System.out.println("------Crew Members-------");
+        System.out.println(String.format("%20s|%20s|%20s|%20s|%20s|%20s|%20s",
                 "Id", "Role", "First name", "Last name", "Phone number", "Address", "Date of birth"));
         for (CrewMember member : list) {
             System.out.println(member);
