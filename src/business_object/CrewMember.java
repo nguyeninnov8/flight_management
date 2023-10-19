@@ -5,6 +5,7 @@
  */
 package business_object;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -12,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author ASUS
  */
-public class CrewMember extends Person{
+public class CrewMember extends Person implements Serializable{
     private String id;
     private RoleMember role;
     private boolean isAvailable;

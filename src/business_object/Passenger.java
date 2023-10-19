@@ -5,13 +5,14 @@
  */
 package business_object;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  *
  * @author ASUS
  */
-public class Passenger extends Person{
+public class Passenger extends Person implements Serializable{
 
     public Passenger(String firstName, String lastName, String phoneNumber, String address, LocalDate dateOfBirth) {
         super(firstName, lastName, phoneNumber, address, dateOfBirth);

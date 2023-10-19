@@ -8,12 +8,14 @@ package data_objects;
 import business_object.Passenger;
 import java.util.ArrayList;
 import java.util.List;
+import utils.HandlingFile;
 
 /**
  *
  * @author ASUS
  */
 public class PassengerDao implements IPassengerDao{
+    private final String PASSENGER_FILEPATH = "src\\passenger.dat";
     List<Passenger> passengerList;
     
     public PassengerDao() {
@@ -43,5 +45,15 @@ public class PassengerDao implements IPassengerDao{
             updatedPassenger = passenger;
         } 
         return false;
+    }
+
+    @Override
+    public boolean saveToFile() {
+        return new HandlingFile<Passenger>().saveToFile(PASSENGER_FILEPATH, passengerList);
+    }
+
+    @Override
+    public boolean loadFromFile() {
+        return new HandlingFile<Passenger>().loadFromFile(PASSENGER_FILEPATH, passengerList);
     }
 }

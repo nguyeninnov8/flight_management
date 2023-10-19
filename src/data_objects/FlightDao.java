@@ -8,19 +8,25 @@ package data_objects;
 import business_object.CrewMember;
 import business_object.Flight;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import utils.HandlingFile;
 
 /**
  *
  * @author ASUS
  */
 public class FlightDao implements IFlightDao{
+    private final String FLIGHT_FILEPATH = "src\\flight.dat";
     private List<Flight> flightList;
 
     public FlightDao() {
         this.flightList = new ArrayList<>();
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+//        Flight F1 = new Flight("F1234", "TN", "TPHCM", LocalDateTime.parse("10/10/2023 12:30", dateTimeFormatter), LocalDateTime.parse("10/10/2023 17:30", dateTimeFormatter));
+//        Flight F2 = new Flight("F3544", "HN", "TPHCM", LocalDateTime.parse("20/10/2023 12:30", dateTimeFormatter), LocalDateTime.parse("20/10/2023 17:30", dateTimeFormatter));
+//        flightList.add(F1);
+//        flightList.add(F2);
     }
     
     @Override
@@ -65,11 +71,11 @@ public class FlightDao implements IFlightDao{
     @Override
     public List<Flight> getFlightBaseOnDepartArriLocateDate(String departureLocation, String arrivalLocation, LocalDate flightDate) {
         List<Flight> resultList = new ArrayList<>();
-        for (Flight flight : resultList) {
-            LocalDateTime ld = flight.getDepartureTime().atStartOfDay();
+        for (Flight flight : flightList) {
+            LocalDate ld = flight.getDepartureTime().toLocalDate();
             if(flight.getDepartureCity().equalsIgnoreCase(departureLocation) && 
                     flight.getDestinationCity().equalsIgnoreCase(arrivalLocation) &&
-                    ld.equals(flightDate.atStartOfDay())) {
+                    ld.equals(flightDate)) {
                 resultList.add(flight);
             }
         }
@@ -95,11 +101,11 @@ public class FlightDao implements IFlightDao{
     public void showAllSeats(Flight flight) {
         boolean[][] seats = flight.getAvailableSeat();
         int i = 0;
-        System.out.format("%2d %d %d %d %d %d", 1, 2, 3, 4, 5, 6);
+        System.out.format("%4d %d %d %d %d %d\n", 1, 2, 3, 4, 5, 6);
         for (boolean[] row : seats) {
-            System.out.print(String.format("%c", (char) ('A' + i)));
+            System.out.print(String.format("%2c ", (char) ('A' + i)));
             for (boolean seat : row) {
-                if(seat == true) {
+                if(seat) {
                     System.out.print("O" + " ");
                 } else {
                     System.out.print("X" + " ");
@@ -112,13 +118,15 @@ public class FlightDao implements IFlightDao{
 
     @Override
     public boolean setValidSeat(Flight flight, String seat) {
-       int row = Character.toUpperCase(seat.charAt(0)) - 97;
-       int column = Integer.parseInt(seat.charAt(1)+"");
+       int row = Character.toUpperCase(seat.charAt(0)) - 65;
+       int column = Integer.parseInt(seat.charAt(1)+"") - 1;
        boolean[][] seats = flight.getAvailableSeat();
        if(!seats[row][column]){
+           System.err.println(seat + " has been taken!");
            return false;
        }
-       seats[row][column] = false;
+       flight.setUnavailable(row, column);
+       getFlight(flight.getFlightNumber()).setUnavailable(row, column);
        return true;
     }
 
@@ -132,5 +140,15 @@ public class FlightDao implements IFlightDao{
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean saveToFile() {
+        return new HandlingFile<Flight>().saveToFile(FLIGHT_FILEPATH, flightList);
+    }
+
+    @Override
+    public boolean loadFromFile() {
+        return new HandlingFile<Flight>().loadFromFile(FLIGHT_FILEPATH, flightList);
     }
 }

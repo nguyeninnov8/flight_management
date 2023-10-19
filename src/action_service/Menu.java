@@ -7,6 +7,7 @@ public class Menu {
     static final Service service = new Service();
 
     public static void mainMenu() {
+        service.loadAll();
         int choice;
         do {
             System.out.println("---MAIN MENU---\n"
@@ -36,10 +37,10 @@ public class Menu {
                     // incoming
                     break;
                 case 6:
-
+                    service.saveAll();
                     break;
                 case 7:
-
+                    service.showAllFromFile();
             }
         } while (choice != 8);
     }

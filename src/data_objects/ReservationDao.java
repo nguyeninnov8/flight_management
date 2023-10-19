@@ -1,19 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package data_objects;
 
 import business_object.Reservation;
 import java.util.ArrayList;
 import java.util.List;
+import utils.HandlingFile;
 
-/**
- *
- * @author ASUS
- */
 public class ReservationDao implements IReservationDao{
+    private final String RESERVATION_FILEPATH = "src\\reservation.dat";
     List<Reservation> reservationList;
 
     public ReservationDao() {
@@ -69,5 +63,15 @@ public class ReservationDao implements IReservationDao{
     @Override
     public boolean checkReservationExist(String id) {
         return (getReservation(id) != null);
+    }
+
+    @Override
+    public boolean saveToFile() {
+        return new HandlingFile<Reservation>().saveToFile(RESERVATION_FILEPATH, reservationList);
+    }
+
+    @Override
+    public boolean loadFromFile() {
+        return new HandlingFile<Reservation>().loadFromFile(RESERVATION_FILEPATH, reservationList);
     }
 }
