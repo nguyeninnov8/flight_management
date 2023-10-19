@@ -12,16 +12,26 @@ import java.io.Serializable;
  * @author ASUS
  */
 public class BoardingPass implements Serializable{
+    private Reservation reservation;
     private Passenger passenger;
     private String seat;
     private Flight flight;
 
-    public BoardingPass(Passenger passenger, String seat, Flight flight) {
+    public BoardingPass(Reservation reservation,Passenger passenger, String seat, Flight flight) {
+        this.reservation = reservation;
         this.passenger = passenger;
         this.seat = seat;
         this.flight = flight;
     }
 
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
+    
     public Passenger getPassenger() {
         return passenger;
     }
@@ -48,6 +58,6 @@ public class BoardingPass implements Serializable{
 
     @Override
     public String toString() {
-        return "BoardingPass{" + "passenger=" + passenger + ", seat=" + seat + ", flight=" + flight + '}';
+        return "BoardingPass{" + "reservation=" + reservation + ", passenger=" + passenger + ", seat=" + seat + ", flight=" + flight + '}';
     }
 }

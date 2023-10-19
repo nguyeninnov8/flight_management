@@ -47,7 +47,17 @@ public class BoardingPassDao implements IBoardingPassDao{
 
     @Override
     public boolean deleteBoardingPass(BoardingPass boardingPass) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return boardingPasses.remove(boardingPass);
+    }
+
+    @Override
+    public boolean isExistReservationId(String reservationId) {
+        for (BoardingPass boardingPasse : boardingPasses) {
+            if(boardingPasse.getReservation().getId().equals(reservationId)) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

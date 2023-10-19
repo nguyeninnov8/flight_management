@@ -17,5 +17,5 @@ public interface IDaoFactory {
     IReservationDao reservationDao();
     ICrewMemberDao crewMemberDao();
     IPassengerDao passengerDao();
-    
+    IBoardingPassDao boardingPassDao();
 }

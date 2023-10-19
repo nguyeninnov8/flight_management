@@ -38,5 +38,10 @@ public class DaoFactory implements IDaoFactory{
     public IPassengerDao passengerDao() {
         return new PassengerDao();
     }
+
+    @Override
+    public IBoardingPassDao boardingPassDao() {
+        return new BoardingPassDao();
+    }
     
 }

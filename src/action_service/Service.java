@@ -12,6 +12,7 @@ import business_object.Passenger;
 import business_object.Reservation;
 import business_object.RoleMember;
 import data_objects.DaoFactory;
+import data_objects.IBoardingPassDao;
 import data_objects.ICrewMemberDao;
 import data_objects.IDaoFactory;
 import data_objects.IFlightDao;
@@ -35,6 +36,7 @@ public class Service implements IService {
     static final IReservationDao rervationDao = factoryDao.reservationDao();
     static final ICrewMemberDao crewMemberDao = factoryDao.crewMemberDao();
     static final IPassengerDao passengerDao = factoryDao.passengerDao();
+    static final IBoardingPassDao boardingPassDao = factoryDao.boardingPassDao();
 
     @Override
     public void addNewFlight() {
@@ -135,6 +137,10 @@ public class Service implements IService {
                         + "Please check again!");
                 continue;
             }
+            if(boardingPassDao.isExistReservationId(reservationId)) {
+                System.err.println("This ReservationId has used before!");
+                continue;
+            }
             break;
         }
         Flight reserverdFlight = rervationDao.getReservation(reservationId).getReservedFlight();
@@ -147,7 +153,13 @@ public class Service implements IService {
             }
             break;
         }
-        BoardingPass boardingPass = new BoardingPass(rervationDao.getReservation(reservationId).getReservedPassenger(), choosedSeat, rervationDao.getReservation(reservationId).getReservedFlight());
+        flightDao.setValidSeat(reserverdFlight, choosedSeat);
+        BoardingPass boardingPass = new BoardingPass(rervationDao.getReservation(reservationId), rervationDao.getReservation(reservationId).getReservedPassenger(), choosedSeat, rervationDao.getReservation(reservationId).getReservedFlight());
+        if(boardingPassDao.addBoardingPass(boardingPass)) {
+            System.out.println("Created BoardingPass Successfully!");
+        } else {
+            System.err.println("Created BoardingPass Fail!");
+        }
         viewBoardingPass(boardingPass);
     }
 

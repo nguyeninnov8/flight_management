@@ -18,4 +18,5 @@ public interface IBoardingPassDao {
     boolean addBoardingPass(BoardingPass boardingPass);
     boolean updateBoardingPass(BoardingPass boardingPass);
     boolean deleteBoardingPass(BoardingPass boardingPass);
+    boolean isExistReservationId(String reservationId);
 }
