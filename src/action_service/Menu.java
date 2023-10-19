@@ -73,7 +73,7 @@ public class Menu {
             System.out.println("---CHOOSE ROLE MEMBER---\n"
                     + "1. PILOT\n"
                     + "2. FLIGHT ATTENDANT\n"
-                    + "3. GROUND STAFF"
+                    + "3. GROUND STAFF\n"
                     + "4. Back to main menu");
             choice = Service.validator.inputInteger("Input the choice:", 1, 4);
             switch (choice) {

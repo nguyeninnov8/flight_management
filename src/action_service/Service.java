@@ -130,6 +130,7 @@ public class Service implements IService {
 
     @Override
     public void checkIn() {
+        // check reservationId
         String reservationId, choosedSeat;
         while (true) {
             reservationId = validator.inputStringWithRegex("Please input correct format (Rxyzt with xyzt is a number)", "Please input reseravation id: ", "R\\d{4}");
@@ -145,17 +146,20 @@ public class Service implements IService {
             break;
         }
         Flight reserverdFlight = rervationDao.getReservation(reservationId).getReservedFlight();
+        // show all seats
         flightDao.showAllSeats(reserverdFlight);
+        // choose seat
         while (true) {
             choosedSeat = validator.inputStringWithRegex("Please input correct format (e.g., A1, A2, A3)", "Please choose your seat (e.g., A1, A2, A3,...): ", "^[a-zA-Z][1-6]$");
-            if (!flightDao.setValidSeat(reserverdFlight, choosedSeat)) {
-                System.err.println("Please input valid seat!");
+            if (!rervationDao.setValidSeat(reserverdFlight, choosedSeat)) {
+                System.err.println(choosedSeat + " has been taken! Please input valid seat!");
                 continue;
             }
             break;
         }
         flightDao.setValidSeat(reserverdFlight, choosedSeat);
-        BoardingPass boardingPass = new BoardingPass(rervationDao.getReservation(reservationId), rervationDao.getReservation(reservationId).getReservedPassenger(), choosedSeat, rervationDao.getReservation(reservationId).getReservedFlight());
+        Reservation boardedReservation = rervationDao.getReservation(reservationId);
+        BoardingPass boardingPass = new BoardingPass(boardedReservation, choosedSeat);
         if(boardingPassDao.addBoardingPass(boardingPass)) {
             System.out.println("Created BoardingPass Successfully!");
         } else {
@@ -166,16 +170,18 @@ public class Service implements IService {
 
     private void viewBoardingPass(BoardingPass boardingPass) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        Flight flight = boardingPass.getReservation().getReservedFlight();
+        Passenger passenger = boardingPass.getReservation().getReservedPassenger();
         System.out.println("-------------------------------------");
         System.out.println("|            Boarding Pass           |");
         System.out.println("-------------------------------------");
-        System.out.format("|NAME: %-30s|\n", (boardingPass.getPassenger().getFirstName() + " " + boardingPass.getPassenger().getLastName()));
-        System.out.format("|FROM: %-30s|\n", boardingPass.getFlight().getDepartureCity());
-        System.out.format("|TO: %-32s|\n", boardingPass.getFlight().getDestinationCity());
+        System.out.format("|NAME: %-30s|\n", (passenger.getFirstName() + " " + passenger.getLastName()));
+        System.out.format("|FROM: %-30s|\n", flight.getDepartureCity());
+        System.out.format("|TO: %-32s|\n", flight.getDestinationCity());
         System.out.format("|TIME                                |\n");
-        System.out.format("| DEPARTURE TIME: %-19s|\n", boardingPass.getFlight().getDepartureTime().format(dateTimeFormatter));
-        System.out.format("| ARRIVAL TIME: %-21s|\n", boardingPass.getFlight().getArrivalTime().format(dateTimeFormatter));
-        System.out.format("|FLIGHT: %-28s|\n", boardingPass.getFlight().getFlightNumber());
+        System.out.format("| DEPARTURE TIME: %-19s|\n", flight.getDepartureTime().format(dateTimeFormatter));
+        System.out.format("| ARRIVAL TIME: %-21s|\n", flight.getArrivalTime().format(dateTimeFormatter));
+        System.out.format("|FLIGHT: %-28s|\n", flight.getFlightNumber());
         System.out.format("|SEAT: %-30s|\n", boardingPass.getSeat());
         System.out.println("|------------------------------------|");
         try {
@@ -214,6 +220,7 @@ public class Service implements IService {
     public void showCrewMembers(List<CrewMember> list) {
         System.out.println("------Crew Members-------");
         System.out.println(String.format("%20s|%20s|%20s|%20s|%20s|%20s|%20s",
+
                 "Id", "Role", "First name", "Last name", "Phone number", "Address", "Date of birth"));
         for (CrewMember member : list) {
             System.out.println(member);
@@ -340,11 +347,6 @@ public class Service implements IService {
         } else{
             System.err.println("An error has occured during saving flights! Please try again!");
         }
-        if(passengerDao.saveToFile()){
-            System.out.println("Saving passengers to database successfully!");
-        } else{
-            System.err.println("An error has occured during saving passengers! Please try again!");
-        }
         if(rervationDao.saveToFile()){
             System.out.println("Saving reservations to database successfully!");
         } else{
@@ -355,14 +357,19 @@ public class Service implements IService {
         } else{
             System.err.println("An error has occured during saving crew members! Please try again!");
         }
+        if(boardingPassDao.saveToFile()){
+            System.out.println("Saving boarding passes to database successfully!");
+        } else{
+            System.err.println("An error has occured during saving boarding passes! Please try again!");
+        }
     }
 
     @Override
     public void loadAll() {
         flightDao.loadFromFile();
-        passengerDao.loadFromFile();
         rervationDao.loadFromFile();
         crewMemberDao.loadFromFile();
+        boardingPassDao.loadFromFile();
     }
 
     @Override

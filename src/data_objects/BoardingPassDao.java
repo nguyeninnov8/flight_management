@@ -1,19 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package data_objects;
 
 import business_object.BoardingPass;
 import java.util.ArrayList;
 import java.util.List;
+import utils.HandlingFile;
 
-/**
- *
- * @author ASUS
- */
 public class BoardingPassDao implements IBoardingPassDao{
+    private final String BOARDINGPASS_FILEPATH = "src\\boardingPass.dat";
     List<BoardingPass> boardingPasses;
 
     public BoardingPassDao() {
@@ -58,6 +52,16 @@ public class BoardingPassDao implements IBoardingPassDao{
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean saveToFile() {
+        return new HandlingFile<BoardingPass>().saveToFile(BOARDINGPASS_FILEPATH, boardingPasses);
+    }
+
+    @Override
+    public boolean loadFromFile() {
+        return new HandlingFile<BoardingPass>().loadFromFile(BOARDINGPASS_FILEPATH, boardingPasses);
     }
     
 }

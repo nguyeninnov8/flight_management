@@ -19,4 +19,7 @@ public interface IBoardingPassDao {
     boolean updateBoardingPass(BoardingPass boardingPass);
     boolean deleteBoardingPass(BoardingPass boardingPass);
     boolean isExistReservationId(String reservationId);
+    // handling file
+    boolean saveToFile();
+    boolean loadFromFile();
 }

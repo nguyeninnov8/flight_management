@@ -117,17 +117,10 @@ public class FlightDao implements IFlightDao{
     }
 
     @Override
-    public boolean setValidSeat(Flight flight, String seat) {
+    public void setValidSeat(Flight flight, String seat) {
        int row = Character.toUpperCase(seat.charAt(0)) - 65;
        int column = Integer.parseInt(seat.charAt(1)+"") - 1;
-       boolean[][] seats = flight.getAvailableSeat();
-       if(!seats[row][column]){
-           System.err.println(seat + " has been taken!");
-           return false;
-       }
-       flight.setUnavailable(row, column);
        getFlight(flight.getFlightNumber()).setUnavailable(row, column);
-       return true;
     }
 
     @Override
