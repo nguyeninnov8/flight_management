@@ -55,7 +55,7 @@ public class CrewMember extends Person implements Serializable{
     @Override
     public String toString() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return String.format("%12s|%12s|%12s|%12s|%12s|%25s|%12s",
+        return String.format("%12s|%18s|%12s|%12s|%12s|%25s|%12s",
                 this.id, this.role, this.getFirstName(), this.getLastName(), this.getPhoneNumber(), this.getAddress(), this.getDateOfBirth().format(dateTimeFormatter));
     }
     

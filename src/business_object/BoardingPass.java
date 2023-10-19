@@ -13,15 +13,11 @@ import java.io.Serializable;
  */
 public class BoardingPass implements Serializable{
     private Reservation reservation;
-    private Passenger passenger;
     private String seat;
-    private Flight flight;
 
-    public BoardingPass(Reservation reservation,Passenger passenger, String seat, Flight flight) {
+    public BoardingPass(Reservation reservation, String seat) {
         this.reservation = reservation;
-        this.passenger = passenger;
         this.seat = seat;
-        this.flight = flight;
     }
 
     public Reservation getReservation() {
@@ -30,14 +26,6 @@ public class BoardingPass implements Serializable{
 
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
-    }
-    
-    public Passenger getPassenger() {
-        return passenger;
-    }
-
-    public void setPassenger(Passenger passenger) {
-        this.passenger = passenger;
     }
 
     public String getSeat() {
@@ -48,16 +36,8 @@ public class BoardingPass implements Serializable{
         this.seat = seat;
     }
 
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
     @Override
     public String toString() {
-        return "BoardingPass{" + "reservation=" + reservation + ", passenger=" + passenger + ", seat=" + seat + ", flight=" + flight + '}';
+        return "BoardingPass{" + "reservation=" + reservation + ", seat=" + seat + '}';
     }
 }

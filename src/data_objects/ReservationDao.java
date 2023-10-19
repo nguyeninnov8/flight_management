@@ -1,6 +1,7 @@
 
 package data_objects;
 
+import business_object.Flight;
 import business_object.Reservation;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,5 +74,22 @@ public class ReservationDao implements IReservationDao{
     @Override
     public boolean loadFromFile() {
         return new HandlingFile<Reservation>().loadFromFile(RESERVATION_FILEPATH, reservationList);
+    }
+
+    @Override
+    public boolean setValidSeat(Flight flight, String seat) {
+       int row = Character.toUpperCase(seat.charAt(0)) - 65;
+       int column = Integer.parseInt(seat.charAt(1)+"") - 1;
+       boolean[][] seats = flight.getAvailableSeat();
+       if(!seats[row][column]){
+           return false;
+       }
+       for(Reservation temp: reservationList){
+           Flight tempFlight = temp.getReservedFlight();
+           if(tempFlight.getFlightNumber().equals(flight.getFlightNumber())){
+               tempFlight.setUnavailable(row, column);
+           }
+       }
+       return true;
     }
 }
