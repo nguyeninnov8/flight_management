@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Comparator;
 
 /**
  *
@@ -136,4 +137,17 @@ public class Flight implements Serializable{
         String arrivalTImeStr = this.arrivalTime.format(dateTimeFormatter);
         return String.format("%20s|%20s|%20s|%20s|%20s", this.flightNumber, this.departureCity, this.destinationCity, departureTimeStr, arrivalTImeStr);
     }
+
+    public static Comparator compareDate = new Comparator(){
+        @Override
+        public int compare(Object o1, Object o2) {
+            Flight flight1 = (Flight) o1;
+            Flight flight2 = (Flight) o2;
+            if(flight1.getDepartureTime().isAfter(flight2.getDepartureTime())){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    };
 }
