@@ -34,7 +34,7 @@ public class Menu {
                     subMenu_crewManagement();
                     break;
                 case 5:
-                    // incoming
+                    subMenu_crewAssignment();
                     break;
                 case 6:
                     service.saveAll();
@@ -85,6 +85,28 @@ public class Menu {
                     break;
                 case 3:
                     service.addCrewMember(RoleMember.GROUND_STAFF);
+            }
+        } while (choice != 4);
+    }
+
+    public static void subMenu_crewAssignment() {
+        int choice;
+        do {
+            System.out.println("---CREW ASSIGNMENT---\n"
+                    + "1. Assign crew members to flight\n"
+                    + "2. Show all crew members of a flight\n"
+                    + "3. Remove crew members from flight\n"
+                    + "4. Back to main menu");
+            choice = Service.validator.inputInteger("Input the choice:", 1, 4);
+            switch (choice) {
+                case 1:
+                    service.assignCrewToFlight();
+                    break;
+                case 2:
+                    service.showCrewOfFlight();
+                    break;
+                case 3:
+                    service.removeCrewFromFlight();
             }
         } while (choice != 4);
     }
