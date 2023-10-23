@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import utils.IValidation;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -374,7 +376,16 @@ public class Service implements IService {
 
     @Override
     public void showAllFromFile() {
-        showAllFlight();
+        System.out.println("------Flight-------");
+        System.out.println(String.format("%20s|%20s|%20s|%20s|%20s",
+                "Flight Number", "Departure City", "Destination City", "Depature Time", "Arrival Time"));
+        List<Flight> list = new ArrayList<>();
+        list.addAll(flightDao.getAll());
+        Collections.sort(list, Collections.reverseOrder(Flight.compareDate));
+        for (Flight flight : list) {
+            System.out.println(flight);
+        }
+        System.out.println("-------------------");
     }
 
 }
